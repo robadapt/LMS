@@ -9,25 +9,23 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
             margin: 0;
             padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
             background-color: #f5f5f7;
         }
         .container {
-            background-color: white;
-            border-radius: 10px;
-            padding: 40px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            max-width: 400px;
-            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1, h2 {
+            color: #1d1d1f;
         }
         h1 {
-            color: #1d1d1f;
             font-size: 24px;
             margin-bottom: 20px;
+        }
+        h2 {
+            font-size: 20px;
+            margin-top: 0;
         }
         input[type="email"] {
             width: 100%;
@@ -51,10 +49,36 @@
             background-color: #0077ed;
         }
         #content {
+            display: flex;
             margin-top: 20px;
+        }
+        #video-section {
+            flex: 2;
+            margin-right: 20px;
+        }
+        #chat-window {
+            flex: 1;
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        #video-container {
+            margin-bottom: 20px;
+        }
+        #video-description {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
         .hidden {
             display: none;
+        }
+        #email-form {
+            max-width: 400px;
+            margin: 0 auto;
+            text-align: center;
         }
     </style>
 </head>
@@ -66,9 +90,16 @@
             <button onclick="startLearning()">Start Learning</button>
         </div>
         <div id="content" class="hidden">
-            <h1 id="lesson-title"></h1>
-            <div id="video-container"></div>
-            <button onclick="nextLesson()" id="next-button">Next Lesson</button>
+            <div id="video-section">
+                <h1 id="lesson-title"></h1>
+                <div id="video-container"></div>
+                <div id="video-description"></div>
+                <button onclick="nextLesson()" id="next-button" class="hidden">Next Lesson</button>
+            </div>
+            <div id="chat-window" class="hidden">
+                <h2>Ask our AI</h2>
+                <p>Chat functionality coming soon...</p>
+            </div>
         </div>
     </div>
     <script>
@@ -94,11 +125,10 @@
         ];
 
         let currentLesson = 0;
-        let userEmail = '';
 
         function startLearning() {
-            userEmail = document.getElementById('email').value;
-            if (userEmail) {
+            const email = document.getElementById('email').value;
+            if (email) {
                 document.getElementById('email-form').classList.add('hidden');
                 document.getElementById('content').classList.remove('hidden');
                 loadLesson();
@@ -113,8 +143,18 @@
             document.getElementById('video-container').innerHTML = `
                 <iframe width="100%" height="315" src="https://www.youtube.com/embed/${lesson.video}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
             `;
-            document.getElementById('next-button').style.display = currentLesson < lessons.length - 1 ? 'inline-block' : 'none';
-            trackVideo(lesson.title);
+            document.getElementById('video-description').innerHTML = `
+                <p>Throughout this video, you'll learn about the essential tools needed, the importance of proper block arrangement, and the step-by-step cutting process. We'll cover everything from initial sanitization and the strategic "pre-cut" to the final "eye cut" technique. You'll also understand why certain steps, such as block orientation and plastic folding, are critical for creating the ideal growing environment.</p>
+                <p>Whether you're new to mushroom farming or looking to refine your techniques, this video will provide valuable insights into preparing mushroom blocks for fruiting. Let's dive in and explore this fundamental aspect of successful mushroom cultivation.</p>
+            `;
+            document.getElementById('next-button').classList.add('hidden');
+            document.getElementById('chat-window').classList.add('hidden');
+            
+            // Show next button and chat window after a delay (simulating video watch time)
+            setTimeout(() => {
+                document.getElementById('next-button').classList.remove('hidden');
+                document.getElementById('chat-window').classList.remove('hidden');
+            }, 10000); // 10 seconds delay, adjust as needed
         }
 
         function nextLesson() {
@@ -122,16 +162,6 @@
                 currentLesson++;
                 loadLesson();
             }
-        }
-
-        function trackVideo(videoTitle) {
-            fetch('/track-video', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ email: userEmail, video: videoTitle }),
-            });
         }
     </script>
 </body>
