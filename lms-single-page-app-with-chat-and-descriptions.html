@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simplicity LMS</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f5f5f7;
+        }
+        .container {
+            background-color: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 1200px;
+            width: 95%;
+            display: flex;
+            flex-direction: column;
+        }
+        .content-wrapper {
+            display: flex;
+            justify-content: space-between;
+        }
+        .video-section {
+            flex: 2;
+            margin-right: 20px;
+        }
+        .chat-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            border-left: 1px solid #d2d2d7;
+            padding-left: 20px;
+        }
+        h1, h2 {
+            color: #1d1d1f;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        h2 {
+            font-size: 20px;
+        }
+        input[type="email"], input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #d2d2d7;
+            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #0071e3;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background-color: #0077ed;
+        }
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            height: 0;
+            overflow: hidden;
+            max-width: 100%;
+            margin-bottom: 20px;
+        }
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        #email-form, #video-page {
+            display: none;
+        }
+        #video-page.active {
+            display: block;
+        }
+        #email-form.active {
+            display: block;
+        }
+        #progress {
+            margin-bottom: 10px;
+            font-size: 14px;
+            color: #666;
+        }
+        #chat-messages {
+            height: 300px;
+            overflow-y: auto;
+            border: 1px solid #d2d2d7;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 10px;
+            text-align: left;
+        }
+        #chat-form {
+            display: flex;
+        }
+        #chat-input {
+            flex-grow: 1;
+            margin-right: 10px;
+        }
+        #video-description {
+            margin-top: 20px;
+            text-align: left;
+            font-size: 14px;
+            line-height: 1.5;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="email-form" class="active">
+            <h1>Welcome to Simplicity LMS</h1>
+            <input type="email" id="email" placeholder="Enter your email" required>
+            <button id="start-learning">Start Learning</button>
+        </div>
+        <div id="video-page">
+            <div class="content-wrapper">
+                <div class="video-section">
+                    <h1 id="video-title"></h1>
+                    <div id="progress"></div>
+                    <div class="video-container">
+                        <iframe id="video-frame" width="560" height="315" frameborder="0" allowfullscreen></iframe>
+                    </div>
+                    <div id="video-description"></div>
+                    <button id="prev-video">Previous</button>
+                    <button id="next-video">Next</button>
+                </div>
+                <div class="chat-section">
+                    <h2>Ask Heartee.AI</h2>
+                    <div id="chat-messages"></div>
+                    <form id="chat-form">
+                        <input type="text" id="chat-input" placeholder="Type your question..." required>
+                        <button type="submit">Send</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const videos = [
+            {
+                title: "Morning Walkthrough",
+                url: "https://www.youtube.com/embed/o9svMksFOKM",
+                description: "Good morning, mushroom enthusiasts! Welcome to \"The Heartee Farm Morning Walkthrough.\" Join Dylan, our expert mushroom farmer, as he kicks off the day with a routine that keeps everything running like clockwork. You'll see the essential steps for ensuring our container farm operates smoothly, from meticulous environmental checks and crop inspections to the ever-thrilling order management. Whether you're just starting out or fine-tuning your process, this guide is packed with practical tips and no-nonsense advice. Let's dive in and discover the secrets to a successful mushroom farm. Get ready for a day in the life of fungal farming (we try not to use the word \"fungi or fungus\" at Heartee but I couldn't resist the alliteration) – because even mushrooms appreciate a good morning routine. *All our farms are now positive pressure."
+            },
+            {
+                title: "Block Cutting (BO, YO, PO, BK, CN)",
+                url: "https://www.youtube.com/embed/ciQMyezk1To",
+                description: "Throughout this video, you'll learn about the essential tools needed, the importance of proper block arrangement, and the step-by-step cutting process. We'll cover everything from initial sanitization and the strategic \"pre-cut\" to the final \"eye cut\" technique. You'll also understand why certain steps, such as block orientation and plastic folding, are critical for creating the ideal growing environment. Whether you're new to mushroom farming or looking to refine your techniques, this video will provide valuable insights into preparing mushroom blocks for fruiting. Let's dive in and explore this fundamental aspect of successful mushroom cultivation. *Ideally, spray your towel and not the bags. Isopropyl alcohol in the farm air is not optimal for the fruiting mushrooms."
+            },
+            // ... Add all other videos with their descriptions here
+            {
+                title: "Top Down Cleaning 5",
+                url: "https://www.youtube.com/embed/Ai2yjGxelpE",
+                description: "Welcome, luminous cultivators and chronological connoisseurs, to the dazzling world of mushroom mood lighting! Today, we're diving deep into the pulsating heart of your fungi's day-night rhythm - the almighty Trollmaster light cycle settings. Prepare to become the ultimate mushroom disco DJ as we groove through the ins and outs of illumination automation. We'll be dropping the beat on manual overrides, serving up some hot auto-mode action, and spinning the turntables of time to create the perfect fungal light show. So strap on your mycological mirrorball, because we're about to light up the dance floor of your grow room like it's 1999... or 7 AM, whichever comes first on your Trollmaster! Let's get this mushroom rave started!"
+            }
+        ];
+
+        let currentVideoIndex = 0;
+
+        const emailForm = document.getElementById('email-form');
+        const videoPage = document.getElementById('video-page');
+        const emailInput = document.getElementById('email');
+        const startLearningBtn = document.getElementById('start-learning');
+        const videoTitle = document.getElementById('video-title');
+        const videoFrame = document.getElementById('video-frame');
+        const videoDescription = document.getElementById('video-description');
+        const prevVideoBtn = document.getElementById('prev-video');
+        const nextVideoBtn = document.getElementById('next-video');
+        const progressElement = document.getElementById('progress');
+        const chatMessages = document.getElementById('chat-messages');
+        const chatForm = document.getElementById('chat-form');
+        const chatInput = document.getElementById('chat-input');
+
+        function showVideoPage() {
+            emailForm.classList.remove('active');
+            videoPage.classList.add('active');
+            loadVideo(currentVideoIndex);
+        }
+
+        function loadVideo(index) {
+            const video = videos[index];
+            videoTitle.textContent = video.title;
+            videoFrame.src = video.url;
+            videoDescription.textContent = video.description;
+            updateProgress();
+            updateNavButtons();
+        }
+
+        function updateProgress() {
+            progressElement.textContent = `Video ${currentVideoIndex + 1} of ${videos.length}`;
+        }
+
+        function updateNavButtons() {
+            prevVideoBtn.disabled = currentVideoIndex === 0;
+            nextVideoBtn.disabled = currentVideoIndex === videos.length - 1;
+        }
+
+        startLearningBtn.addEventListener('click', function() {
+            const email = emailInput.value;
+            if (email) {
+                localStorage.setItem('userEmail', email);
+                showVideoPage();
+            } else {
+                alert('Please enter your email to start learning.');
+            }
+        });
+
+        prevVideoBtn.addEventListener('click', function() {
+            if (currentVideoIndex > 0) {
+                currentVideoIndex--;
+                loadVideo(currentVideoIndex);
+            }
+        });
+
+        nextVideoBtn.addEventListener('click', function() {
+            if (currentVideoIndex < videos.length - 1) {
+                currentVideoIndex++;
+                loadVideo(currentVideoIndex);
+            }
+        });
+
+        chatForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const message = chatInput.value.trim();
+            if (message) {
+                addMessage('You', message);
+                // Here you would typically send the message to a backend API
+                // For now, we'll just simulate a response
+                setTimeout(() => {
+                    addMessage('Heartee.AI', 'Thank you for your question. How can I assist you further?');
+                }, 1000);
+                chatInput.value = '';
+            }
+        });
+
+        function addMessage(sender, text) {
+            const messageElement = document.createElement('p');
+            messageElement.textContent = `${sender}: ${text}`;
+            chatMessages.appendChild(messageElement);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Check if user has already entered email
+        const savedEmail = localStorage.getItem('userEmail');
+        if (savedEmail) {
+            emailInput.value = savedEmail;
+            showVideoPage();
+        }
+    </script>
+</body>
+</html>
