@@ -73,6 +73,7 @@
             border-radius: 10px;
             padding: 20px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
         }
         .hidden {
             display: none;
@@ -96,7 +97,7 @@
                 <h1 id="lesson-title"></h1>
                 <div id="video-container"></div>
                 <div id="video-description"></div>
-                <button onclick="nextLesson()" id="next-button" class="hidden">Next Lesson</button>
+                <button onclick="nextLesson()" id="next-button">Next Lesson</button>
             </div>
             <div id="chat-window">
                 <h2>Ask our AI</h2>
@@ -149,12 +150,13 @@
                 <p>Throughout this video, you'll learn about the essential tools needed, the importance of proper block arrangement, and the step-by-step cutting process. We'll cover everything from initial sanitization and the strategic "pre-cut" to the final "eye cut" technique. You'll also understand why certain steps, such as block orientation and plastic folding, are critical for creating the ideal growing environment.</p>
                 <p>Whether you're new to mushroom farming or looking to refine your techniques, this video will provide valuable insights into preparing mushroom blocks for fruiting. Let's dive in and explore this fundamental aspect of successful mushroom cultivation.</p>
             `;
-            document.getElementById('next-button').classList.add('hidden');
             
-            // Show next button after a delay (simulating video watch time)
-            setTimeout(() => {
-                document.getElementById('next-button').classList.remove('hidden');
-            }, 10000); // 10 seconds delay, adjust as needed
+            // Show or hide the "Next Lesson" button based on whether there's a next lesson
+            if (currentLesson < lessons.length - 1) {
+                document.getElementById('next-button').style.display = 'block';
+            } else {
+                document.getElementById('next-button').style.display = 'none';
+            }
         }
 
         function nextLesson() {
