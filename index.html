@@ -12,7 +12,7 @@
             background-color: #f5f5f7;
         }
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 20px;
         }
@@ -65,6 +65,8 @@
         }
         #video-container {
             margin-bottom: 20px;
+            width: 1096px;
+            height: 591px;
         }
         #video-description {
             background-color: white;
@@ -96,7 +98,7 @@
                 <div id="video-description"></div>
                 <button onclick="nextLesson()" id="next-button" class="hidden">Next Lesson</button>
             </div>
-            <div id="chat-window" class="hidden">
+            <div id="chat-window">
                 <h2>Ask our AI</h2>
                 <p>Chat functionality coming soon...</p>
             </div>
@@ -141,19 +143,17 @@
             const lesson = lessons[currentLesson];
             document.getElementById('lesson-title').textContent = lesson.title;
             document.getElementById('video-container').innerHTML = `
-                <iframe width="100%" height="315" src="https://www.youtube.com/embed/${lesson.video}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                <iframe width="1096" height="591" src="https://www.youtube.com/embed/${lesson.video}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
             `;
             document.getElementById('video-description').innerHTML = `
                 <p>Throughout this video, you'll learn about the essential tools needed, the importance of proper block arrangement, and the step-by-step cutting process. We'll cover everything from initial sanitization and the strategic "pre-cut" to the final "eye cut" technique. You'll also understand why certain steps, such as block orientation and plastic folding, are critical for creating the ideal growing environment.</p>
                 <p>Whether you're new to mushroom farming or looking to refine your techniques, this video will provide valuable insights into preparing mushroom blocks for fruiting. Let's dive in and explore this fundamental aspect of successful mushroom cultivation.</p>
             `;
             document.getElementById('next-button').classList.add('hidden');
-            document.getElementById('chat-window').classList.add('hidden');
             
-            // Show next button and chat window after a delay (simulating video watch time)
+            // Show next button after a delay (simulating video watch time)
             setTimeout(() => {
                 document.getElementById('next-button').classList.remove('hidden');
-                document.getElementById('chat-window').classList.remove('hidden');
             }, 10000); // 10 seconds delay, adjust as needed
         }
 
